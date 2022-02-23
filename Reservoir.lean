@@ -6,13 +6,13 @@ open scoped DocGen4.Jsx
 
 namespace Reservoir
 
-def searchAux (page : Nat) : IO Json := do
+def searchAux (token : String) (page : Nat) : IO Json := do
   let out ← IO.Process.output {
     cmd := "curl"
     args :=
       #[
         "-s",
-        "-H", "Authorization: token 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",
+        "-H", s!"Authorization: token {token}",
         "--location", s!"https://api.github.com/search/code?q=Lake+language:Lean&sort=index&page={page}&per_page=100",
         "--header", "Accept: application/vnd.github.v3+json" 
       ]
@@ -25,10 +25,10 @@ def searchAux (page : Nat) : IO Json := do
     | Except.error msg =>
       throw <| IO.Error.userError msg
 
-def search : IO (Array Json) := do
+def search (token : String) : IO (Array Json) := do
   let mut results := #[]
   for p in [1:11] do
-    let res ← searchAux p
+    let res ← searchAux token p
     if let Except.ok items := res.getObjValAs? (Array Json) "items" then
       results := results ++ items
   return results

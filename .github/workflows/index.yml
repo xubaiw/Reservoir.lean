@@ -27,7 +27,7 @@ jobs:
 
     - name: Index GitHub
       run: |
-        ./build/bin/reservoir build/reservoir/index.html
+        ./build/bin/reservoir ${{ secrets.GITHUB_TOKEN }} build/reservoir/index.html
       shell: bash
 
     - name: Deploy
