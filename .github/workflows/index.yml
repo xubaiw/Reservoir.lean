@@ -1,0 +1,37 @@
+name: Index
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  index-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Install Elan
+      run: |
+        curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:nightly
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Build
+      run: |
+        lake build
+      shell: bash
+
+    - name: Index GitHub
+      run: |
+        ./build/bin/reservoir build/reservoir/index.html
+      shell: bash
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4.2.2
+      with:
+        branch: gh-pages 
+        folder: build/reservoir
