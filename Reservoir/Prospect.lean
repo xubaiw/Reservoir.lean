@@ -1,8 +1,7 @@
-import Cli
 import Lean.Data.Json
 import Reservoir.GitHub
 
-open Cli Lean Json IO
+open Lean Json IO
 
 namespace Reservoir
 

@@ -1,5 +1,6 @@
 import Cli
 import Lean.Data.Json
+import Reservoir.Generate
 import Reservoir.Prospect
 import Std.Data.HashSet
 
@@ -33,7 +34,7 @@ def loadIndicesFromFile (p : Parsed) : IO (Array String) := do
     return #[]
 
 /--
-  An IO operation that hopes to search for new Lean packages on GitHub.
+  Command runner for the `Reservoir.prospect`.
 -/
 def runProspectCmd (p : Parsed) : IO UInt32 := do
   let token ← getToken! p
@@ -53,16 +54,66 @@ def runProspectCmd (p : Parsed) : IO UInt32 := do
   return 0
 
 /--
-  Wrapper for the `Reservoir.prospect`.
+  Command for running `Reservoir.prospect`.
 -/
 def prospectCmd := `[Cli|
-  installCmd VIA runProspectCmd; ["0.0.1"]
+  prospect VIA runProspectCmd; ["0.0.1"]
   "Search for new Lean packages on GitHub."
 
   FLAGS:
     i, input : String;   "Path of the old package index file. This flag is optioanl."
     o, output : String;  "Path to output new package index file. If not provided, the result will print to stdout."
     t, token : String;   "GitHub access token. If not provided, the command will try to find the `GITHUB_TOKEN` environment variable. If both not provided, the command fails."
+]
+
+-- TODO
+/--
+  Command runner for the `Reservoir.generate`.
+-/
+def runGenerateCmd (p : Parsed) : IO UInt32 := do
+  let indices ← loadIndicesFromFile p
+  if let some output := p.flag? "output" |>.bind (·.as? String) |>.map λ s => (System.FilePath.mk s) then
+    let generatedPages := generate indices
+    generatedPages.forM λ k v => do
+      let f := output.join k
+      if let some par := f.parent then
+        IO.FS.createDirAll par
+      else
+        panic! s!"Invalid to create parent dir for {f}"
+      IO.FS.writeFile f v
+  else 
+    panic! "A output directory must be specified."
+  return 0
+
+/--
+  Command for running `Reservoir.generate`.
+-/
+def generateCmd := `[Cli|
+  generate VIA runGenerateCmd; ["0.0.1"]
+  "Generate a site of Lean projects from the given indices."
+
+  FLAGS:
+    i, input : String;   "Path of the package indiex file."
+    o, output : String;  "Path to output all generated files."
+]
+
+/--
+   Command runner for the whole program
+-/
+def runReservoirCmd (p : Parsed) : IO UInt32 := do
+  IO.println "Run `reservoir -h` for help."
+  return 0
+
+/--
+  Command for running the whole program.
+-/
+def reservoirCmd := `[Cli|
+  reservoir VIA runReservoirCmd; ["0.0.1"]
+  "Reservoir for indexing Lean packages!"
+
+  SUBCOMMANDS:
+    prospectCmd;
+    generateCmd
 ]
 
 end Reservoir
