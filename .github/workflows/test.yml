@@ -29,12 +29,12 @@ jobs:
 
     - name: Prospect GitHub
       run: |
-        ./Reservoir.lean/build/bin/reservoir prospect -o build/lakes.json
+        ./build/bin/reservoir prospect -o build/lakes.json
       shell: bash
 
     - name: Generate Pages
       run: |
-        ./Reservoir.lean/build/bin/reservoir generate -i build/lakes.json -o build/
+        ./build/bin/reservoir generate -i build/lakes.json -o build/
       shell: bash
 
     - name: Upload Artifacts
