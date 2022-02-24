@@ -1,37 +1,11 @@
-import Lean.Data.Json
 import DocGen4.ToHtmlFormat
+import Lean.Data.Json
+import Reservoir.Cli
 
 open Lean Json
 open scoped DocGen4.Jsx
 
 namespace Reservoir
-
-def searchAux (token : String) (page : Nat) : IO Json := do
-  let out ← IO.Process.output {
-    cmd := "curl"
-    args :=
-      #[
-        "-s",
-        "-H", s!"Authorization: token {token}",
-        "--location", s!"https://api.github.com/search/code?q=Lake+language:Lean&sort=index&page={page}&per_page=100",
-        "--header", "Accept: application/vnd.github.v3+json" 
-      ]
-  }
-  if out.exitCode ≠ 0 then
-    throw <| IO.Error.userError "curl failed"
-  else
-    match Json.parse out.stdout with
-    | Except.ok res => return res
-    | Except.error msg =>
-      throw <| IO.Error.userError msg
-
-def search (token : String) : IO (Array Json) := do
-  let mut results := #[]
-  for p in [1:11] do
-    let res ← searchAux token p
-    if let Except.ok items := res.getObjValAs? (Array Json) "items" then
-      results := results ++ items
-  return results
 
 def jsonArrToHtml (js : Array Json) : DocGen4.Html := Id.run <| do
   let mut projects := Std.HashMap.empty
