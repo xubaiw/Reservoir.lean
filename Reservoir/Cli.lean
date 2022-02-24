@@ -73,14 +73,7 @@ def prospectCmd := `[Cli|
 def runGenerateCmd (p : Parsed) : IO UInt32 := do
   let indices ← loadIndicesFromFile p
   if let some output := p.flag? "output" |>.bind (·.as? String) |>.map λ s => (System.FilePath.mk s) then
-    let generatedPages := generate indices
-    generatedPages.forM λ k v => do
-      let f := output.join k
-      if let some par := f.parent then
-        IO.FS.createDirAll par
-      else
-        panic! s!"Invalid to create parent dir for {f}"
-      IO.FS.writeFile f v
+    generate indices output
   else 
     panic! "A output directory must be specified."
   return 0

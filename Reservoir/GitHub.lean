@@ -1,6 +1,6 @@
 import Lean.Data.Json
 
-open Lean Json
+open Lean Json System
 
 namespace Reservoir
 
@@ -13,6 +13,12 @@ abbrev GitHubT := ReaderT String
   Equip the `IO` monad with GitHub token.
 -/
 abbrev GitHubM := GitHubT IO
+
+/--
+  Turn GitHub repository full name into relative path.
+-/
+def fullNameToRelativePath (n : String) : FilePath := 
+  ⟨ "./" ++ n.replace "/" "." ++ ".html" ⟩ 
 
 /--
   Search code on GitHub with the `query` string.
