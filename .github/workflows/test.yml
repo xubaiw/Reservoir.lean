@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Install Elan
+      run: |
+        curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:nightly
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Build Reservoir
+      run: |
+        lake build
+      shell: bash
+
+    - name: Prospect GitHub
+      run: |
+        ./Reservoir.lean/build/bin/reservoir prospect -o build/lakes.json
+      shell: bash
+
+    - name: Generate Pages
+      run: |
+        ./Reservoir.lean/build/bin/reservoir generate -i build/lakes.json -o build/
+      shell: bash
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: index.html
+        path: build/
