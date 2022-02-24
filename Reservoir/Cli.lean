@@ -42,7 +42,7 @@ def runProspectCmd (p : Parsed) : IO UInt32 := do
   let newFoundIndices ← ReaderT.run prospect token
   let res := (oldIndices ++ newFoundIndices)
     |>.foldl (λ h s => h.insert s) HashSet.empty
-    |>.toArray |> toJson |> toString
+    |>.toArray |>.qsort (· < ·) |> toJson |> toString
   let output? := p.flag? "output" |>.bind (·.as? String) |>.map λ s => (System.FilePath.mk s)
   match output? with
   | some f => do
