@@ -63,7 +63,15 @@ partial def removeGitHubLink (s : String) : String :=
   where
     traverse (x : Element) : Element := match x with
     | Element.Element name attrs contents => 
-      Element.Element name attrs <| contents.map (traverseContent (name.startsWith "h"))
+      let (newName, removeLink) := match name with
+      | "h1" => ("h3", true)
+      | "h2" => ("h4", true)
+      | "h3" => ("h5", true)
+      | "h4" => ("h6", true)
+      | "h5" => ("b", true)
+      | "h6" => ("em", true)
+      | _ => (name, false)
+      Element.Element newName attrs <| contents.map (traverseContent removeLink)
     traverseContent (removeLink : Bool) (c : Content) : Content := match c with
     | Content.Element e =>
       if removeLink ∧ (getName e = "a") then

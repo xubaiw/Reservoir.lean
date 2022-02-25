@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Merriweather");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro");
 
 body {
   margin: 0;
@@ -74,7 +75,13 @@ main {
 
 main > * {
   width: 60%;
+}
+
+pre {
   overflow-x: scroll;
+  background-color: #f8f8f8;
+  padding: 1em;
+  font-family: Source Code Pro;
 }
 
 main a {
@@ -88,6 +95,26 @@ main h1:hover::after {
 
 main h2:hover::after {
   content: " ##";
+  color: #ddd;
+}
+
+main h3:hover::after {
+  content: " #*3";
+  color: #ddd;
+}
+
+main h4:hover::after {
+  content: " #*4";
+  color: #ddd;
+}
+
+main h5:hover::after {
+  content: " #*5";
+  color: #ddd;
+}
+
+main h6:hover::after {
+  content: " #*6";
   color: #ddd;
 }
 
