@@ -1,0 +1,8 @@
+["mhuisi/lean4-cli",
+ "crabbo-rave/lean4-Tuple",
+ "leanprover/lake",
+ "cruhland/lean4-analysis",
+ "gebner/oleanparser",
+ "xubaiw/CMark.lean",
+ "xubaiw/Reservoir.lean",
+ "siddhartha-gadgil/lean-loris"]

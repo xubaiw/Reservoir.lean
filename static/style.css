@@ -73,7 +73,8 @@ main {
 }
 
 main > * {
-  min-width: 60%;
+  width: 60%;
+  overflow-x: scroll;
 }
 
 main a {

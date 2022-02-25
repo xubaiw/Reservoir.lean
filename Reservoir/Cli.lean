@@ -66,14 +66,14 @@ def prospectCmd := `[Cli|
     t, token : String;   "GitHub access token. If not provided, the command will try to find the `GITHUB_TOKEN` environment variable. If both not provided, the command fails."
 ]
 
--- TODO
 /--
   Command runner for the `Reservoir.generate`.
 -/
 def runGenerateCmd (p : Parsed) : IO UInt32 := do
+  let token ← getToken! p
   let indices ← loadIndicesFromFile p
   if let some output := p.flag? "output" |>.bind (·.as? String) |>.map λ s => (System.FilePath.mk s) then
-    generate indices output
+    discard <| ReaderT.run (generate indices output) token
   else 
     panic! "A output directory must be specified."
   return 0

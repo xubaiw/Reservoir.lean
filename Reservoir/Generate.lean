@@ -15,15 +15,17 @@ namespace Reservoir
 /--
   Generate a site of Lean projects from the given repository full names.
 -/
-def generate (names : Array String) (output : FilePath) : IO Unit := do
+def generate (names : Array String) (output : FilePath) : GitHubM Unit := do
   -- index
   let indexPath := output / "index.html"
   let indexPage := indexHtml names
   safeWrite indexPath indexPage.toString
   -- package
   for n in names do
+    let packageReadme ← getReadme n
+    let packageDescription ← getDescription n
     let packagePath := output / fullNameToRelativePath n
-    let packagePage := packageHtml n
+    let packagePage := packageHtml n packageDescription packageReadme
     safeWrite packagePath packagePage.toString
   -- statics
   for x in statics do
@@ -36,6 +38,5 @@ def generate (names : Array String) (output : FilePath) : IO Unit := do
       else
         panic! s!"Invalid to create parent dir for {f}"
       IO.FS.writeFile f t
-
 
 end Reservoir

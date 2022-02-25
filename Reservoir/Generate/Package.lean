@@ -10,13 +10,16 @@ open Lean Json IO Std System
 
 namespace Reservoir
 
-def packageHtml (name : String) : DocGen4.Html := 
+def packageHtml (name description readme : String) : DocGen4.Html := 
   let contents := #[
-    <h1>{ DocGen4.Html.text name }</h1>,
+    <h1>{DocGen4.Html.text name}</h1>,
+    <p>{description}</p>,
     <a href={s!"https://github.com/{name}"}>GitHub Link</a>,
     <a href="#" title="Missing now!">Documentation</a>,
     <h2>Pick a version!</h2>,
-    <p>{"TODO: should show a time axes that allows the users to view, filter and click copy the lakefile config."}</p>
+    <p>{"TODO: should show a time axes that allows the users to view, filter and click copy the lakefile config."}</p>,
+    <h2>README</h2>,
+    readme
   ]
   templateHtml name contents
 
