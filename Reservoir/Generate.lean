@@ -3,6 +3,8 @@ import Lean.Data.Json
 import Reservoir.Generate.Index
 import Reservoir.Generate.Package
 import Reservoir.Generate.Statics
+import Reservoir.Generate.DocGen
+import Reservoir.Git
 import Reservoir.GitHub
 import Std.Data.HashMap
 
@@ -22,6 +24,9 @@ def generate (names : Array String) (output : FilePath) : GitHubM Unit := do
   safeWrite indexPath indexPage.toString
   -- package
   for n in names do
+    -- git clone
+    gitClone s!"https://github.com/{n}" (output / "git" / ⟨n⟩)
+    -- package page
     let packageReadme ← getReadme n
     let packageDescription ← getDescription n
     let packagePath := output / fullNameToRelativePath n

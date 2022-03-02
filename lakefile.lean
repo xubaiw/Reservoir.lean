@@ -6,7 +6,7 @@ package Reservoir {
   dependencies := #[
     {
       name := `«doc-gen4»
-      src := Source.git "https://github.com/leanprover/doc-gen4" "28bb2abe40aef3bbaa4e4bc5855cd3d68b122a8e"
+      src := Source.git "https://github.com/leanprover/doc-gen4" "6492f827b7f4af35b046b5b53c91b18a39b365d6"
     },
     {
       name := `Cli

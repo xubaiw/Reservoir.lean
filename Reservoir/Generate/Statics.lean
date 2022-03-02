@@ -7,8 +7,8 @@ open Lean Json IO Std System
 
 namespace Reservoir
 
-def styleCss := include_str "./static/style.css"
-def indexNavigateJs := include_str "./static/index-navigate.js"
+def styleCss := include_str "../../static/style.css"
+def indexNavigateJs := include_str "../../static/index-navigate.js"
 
 def statics : Array (FilePath × String) := #[
   ("./static/style.css", styleCss),
