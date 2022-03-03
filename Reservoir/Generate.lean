@@ -3,7 +3,6 @@ import Lean.Data.Json
 import Reservoir.Generate.Index
 import Reservoir.Generate.Package
 import Reservoir.Generate.Statics
-import Reservoir.Generate.DocGen
 import Reservoir.Git
 import Reservoir.GitHub
 import Std.Data.HashMap
