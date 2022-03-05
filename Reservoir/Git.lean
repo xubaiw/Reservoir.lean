@@ -10,6 +10,6 @@ def gitClone (url : String) (path : FilePath) : IO Unit := do
     args := #["clone", url, path.toString]
   }
   if out.exitCode ≠ 0 then
-    throw <| IO.Error.userError "git clone failed"
+    throw <| IO.Error.userError <| s!"git clone failed: {out.exitCode} {out.stderr}"
 
 end Reservoir

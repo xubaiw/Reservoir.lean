@@ -47,7 +47,7 @@ def searchCode (query: String) : GitHubM (Array Json) := do
           ]
       }
       if out.exitCode ≠ 0 then
-        throw <| IO.Error.userError "curl failed"
+        throw <| IO.Error.userError s!"curl failed: {out.stderr} {out.stderr}"
       else
         match Json.parse out.stdout with
         | Except.ok res => return res
@@ -98,7 +98,7 @@ def getReadme (repo: String) : GitHubM String := do
       ]
   }
   if out.exitCode ≠ 0 then
-    throw <| IO.Error.userError "curl failed"
+    throw <| IO.Error.userError s!"curl failed: {out.stderr} {out.stderr}"
   else
     return removeGitHubLink out.stdout
 
@@ -118,7 +118,7 @@ def getDescription (repo: String) : GitHubM String := do
       ]
   }
   if out.exitCode ≠ 0 then
-    throw <| IO.Error.userError "curl failed"
+    throw <| IO.Error.userError s!"curl failed: {out.stderr} {out.stderr}"
   else
     match Json.parse out.stdout |>.bind (·.getObjValAs? String "description") with
     | Except.ok res => return res
